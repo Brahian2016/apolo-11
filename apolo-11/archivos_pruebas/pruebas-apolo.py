@@ -3,6 +3,7 @@ import random
 from datetime import datetime
 import hashlib
 import time
+import yaml
 
 class Mission:
     def __init__(self):
@@ -25,11 +26,15 @@ class DeviceType:
         return random.choice(["excellent", "good", "warning", "faulty", "killed", "unknown"])
 
 class Device(DeviceType, Mission):
+    file_counter = 1  # Contador de archivos, inicializado en 1
+
     def __init__(self):
         DeviceType.__init__(self)
         Mission.__init__(self)
         self.date = datetime.now().strftime("%d%m%y%H%M%S")
         self.hash = self.generate_hash()
+        self.file_number = Device.file_counter  # Asignar número de archivo
+        Device.file_counter += 1  # Incrementar el contador solo una vez
 
     def generate_hash(self):
         if self.name == "UNKN":
@@ -39,40 +44,39 @@ class Device(DeviceType, Mission):
         return hashlib.md5(data.encode()).hexdigest()
 
     def get_description(self):
-        return f"date: {self.date}\nmission: {self.name}\ndevice_type: {self.device_type}\ndevice_status: {self.status}\nhash: {self.hash}"
+        return {
+            "date": self.date,
+            "mission": self.name,
+            "device_type": self.device_type,
+            "device_status": self.status,
+            "hash": self.hash
+        }
 
-def run_simulation(output_folder, num_missions):
-    while True:
-        missions = []
+def run_simulation(output_folder):
+    num_loops = int(input("Ingrese la cantidad de bucles a crear: "))
+    num_files_per_loop = int(input("Ingrese la cantidad de archivos por bucle: "))
 
-        for _ in range(num_missions):
-            mission = Mission()
-            missions.append(mission)
+    for _ in range(num_loops):
+        mission = Mission()
 
-            num_files = random.randint(1, 100)
+        for i in range(1, num_files_per_loop + 1):  # Cambiar según la cantidad de archivos por misión
+            device = Device()
+            mission.add_device(device)
 
-            for i in range(1, num_files + 1):
-                device = Device()
-                mission.add_device(device)
+            file_name = f"APL{device.name}0000{device.file_number}.yaml"  # Cambiar la extensión a .yaml
+            file_path = os.path.join(output_folder, "devices", file_name)
 
-                # Reemplazar corchetes y barras verticales en el nombre del archivo
-                file_name = f"APL{device.name}0000{i}.log"
-                file_path = os.path.join(output_folder, "devices", file_name)
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
-                # Comprobar y crear la carpeta si no existe
-                os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            print("Intentando crear el archivo en:", file_path)
 
-                print("Intentando crear el archivo en:", file_path)  # Agregado para depuración
+            with open(file_path, "w") as file:
+                yaml.dump(device.get_description(), file, default_flow_style=False)
 
-                with open(file_path, "w") as file:
-                    file.write(device.get_description())
+        time.sleep(2)  # Esperar 2 segundos después de crear el par de archivos
 
-                time.sleep(2)  # Esperar 2 segundos
-
-        for mission in missions:
-            mission.generate_report()
+        mission.generate_report()
 
 if __name__ == "__main__":
     output_folder = "C:\\Users\\anjim\\OneDrive\\Documentos\\apolo-11\\apolo-11\\Archivos"
-    num_missions = int(input("Ingrese la cantidad de misiones a crear: "))
-    run_simulation(output_folder, num_missions)
+    run_simulation(output_folder)
