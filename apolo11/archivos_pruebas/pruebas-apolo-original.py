@@ -15,7 +15,7 @@ class DeviceType:
         self.device_type = random.choice(["Satellite", "Spacecraft", "Spacesuit", "Unknown"])
         self.status = self.generate_status()
 
-    def generate_status(self):
+    def generate_status(self) -> str:
         return random.choice(["excellent", "good", "warning", "faulty", "killed", "unknown"])
 
 class Device(DeviceType, Mission):
@@ -68,5 +68,5 @@ def run_simulation(output_folder):
 
 
 if __name__ == "__main__":
-    output_folder = "C:\\Users\\anjim\\OneDrive\\Documentos\\apolo-11\\apolo-11\\Archivos"
+    output_folder = "C:\\Users\\Brahian Álvarez\\Documents\\apolo-11\\apolo-11\\Archivos"
     run_simulation(output_folder)
