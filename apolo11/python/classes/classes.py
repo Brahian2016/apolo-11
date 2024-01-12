@@ -2,7 +2,7 @@ import random
 from datetime import datetime
 import hashlib
 import yaml
-from apolo11.python.metadata.Directory import *
+from Apolo11.python.metadata.Directory import *
 
 with open(PathInputRaw.configuration_file, 'r') as file:
     config_data = yaml.safe_load(file)

@@ -17,5 +17,5 @@ class PathInputRaw:
 class PathOutputRaw:
     '''Una clase que representa el directorio output.'''
     output_directory: os = os.path.join(CurrentDirectory.current_directory, 'output')
-    output_files: os = os.path.join(output_directory, 'archivos')
+    output_files: os = os.path.join(output_directory, 'devices')
 
