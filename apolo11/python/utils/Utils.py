@@ -6,6 +6,7 @@ from Apolo11.python.classes.classes import *
 from Apolo11.python.metadata.Directory import *
 from datetime import datetime
 
+
 def get_parameters() -> dict:
     with open(PathInputRaw.configuration_file, 'r') as file:
         try:
@@ -70,7 +71,6 @@ def run_simulation():
         print("\nProceso interrumpido. Saliendo...")
 
 
-            
 def create_files(output_folder: str) -> None:
     device = Device()
 
