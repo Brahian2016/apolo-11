@@ -35,7 +35,7 @@ def get_parameters() -> dict:
         return parameters_dict
 
 
-def run_simulation():
+def run_simulation() -> None:
     parameters_dict = get_parameters()
     current_date = datetime.now().strftime("%Y_%m_%d_%H%M%S")
     output_folder = os.path.join(PathOutputRaw.output_files, current_date)

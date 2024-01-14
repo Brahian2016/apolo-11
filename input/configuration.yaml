@@ -20,7 +20,6 @@ range_for_files: False
 min_files_per_loop: 10
 max_files_per_loop: 100
 infinity_loops: False
-num_loops: 2
-num_files_per_loop: 100
-time_to_create_file: 3
+num_loops: 3
+time_to_create_file: 2
 
