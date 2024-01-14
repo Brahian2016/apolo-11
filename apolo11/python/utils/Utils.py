@@ -2,8 +2,8 @@ import os
 import time
 import random
 import yaml
-from Apolo11.python.classes.classes import *
-from Apolo11.python.metadata.Directory import *
+from apolo11.python.classes.classes import *
+from apolo11.python.metadata.Directory import *
 from datetime import datetime
 
 
