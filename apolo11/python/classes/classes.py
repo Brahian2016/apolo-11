@@ -65,7 +65,7 @@ class Device(DeviceType, Mission):
         data: str = f"{self.date}{self.name}{self.device_type}{self.status}"
         return hashlib.md5(data.encode()).hexdigest()
 
-    def get_description(self) -> yaml:
+    def get_description(self) -> dict:
         return {
             "date": self.date,
             "mission": self.name,
