@@ -14,20 +14,16 @@ with open(PathInputRaw.configuration_file, 'r') as file:
 
 
 class Mission:
-    """
-    _summary_: Take a NASA mission name
-    Mission type: class
+    """Class to obtain a random mission name
     """
     def __init__(self) -> None:
+        """Constructor method that generate the ramdom mission
+        """
         self.name: str = random.choice(missionsConfig)
 
 
 class DeviceType:
-    """"
-    This class represents the device type each mission will use
-    Attributes: 
-    1. device_type (str): It's takes randomly one of the devices 
-    2. status (str): Will return the device status randomly
+    """"Class that define device type and device status
     """
     def __init__(self) -> None:
         self.device_type: str = random.choice(deviceTypeConfig)
@@ -38,16 +34,18 @@ class DeviceType:
 
 
 class Device(DeviceType, Mission):
-    """
-    _summary_: Generate device hash and file structure
-    :param DeviceType: This class is used for take device type and status
+    """Generate device hash and file structure
+    
+    :param DeviceType: Used for take the device type
     :type DeviceType: class
-    :param Mission: This class is used for take a random Mission name
+    :param Mission: Used for take a random Mission name
     :type Mission: class
     """
     file_counter: int = 1  # Contador de archivos, inicializado en 1
     
     def __init__(self) -> None:
+        """Constructor method that inicialize Date, hash, file number and counter values
+        """
         DeviceType.__init__(self)
         Mission.__init__(self)
         self.date: str = datetime.now().strftime("%d%m%y%H%M%S")
@@ -56,16 +54,28 @@ class Device(DeviceType, Mission):
         Device.file_counter += 1  # Incrementar el contador solo una vez
 
     def generate_hash(self) -> hashlib:
-        '''
-        
-        '''
+        """Generate hash identifier
+
+        :return: hash object
+        :rtype: hashlib
+        """
         if self.name == "UNKN":
             return ''
 
         data: str = f"{self.date}{self.name}{self.device_type}{self.status}"
         return hashlib.md5(data.encode()).hexdigest()
 
-    def get_description(self) -> dict:
+    def get_description(self) -> yaml:
+        """Get a description of the object.
+
+        Returns:
+        dict: A dictionary containing the following information:
+        - "date": The date associated with the object.
+        - "mission": The name of the mission.
+        - "device_type": The type of device.
+        - "device_status": The status of the device.
+        - "hash": The hash associated with the object.
+        """
         return {
             "date": self.date,
             "mission": self.name,
