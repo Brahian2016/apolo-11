@@ -8,6 +8,24 @@ from datetime import datetime
 
 
 def get_parameters() -> dict:
+    """Retrieve parameters from a YAML configuration file.
+
+    Returns:
+    dict: A dictionary containing the extracted parameters.
+
+    Raises:
+    ValueError: If there is an issue loading the YAML file or if the file content is invalid.
+
+    Configuration File Format:
+    The configuration file is expected to be in YAML format and contain the following fields:
+
+    - num_loops (int): Number of loops to execute.
+    - time_to_create_file (int): Time in seconds to wait before creating a file in each loop.
+    - range_for_files (bool): Whether to use a range for creating files (True/False).
+    - max_files_per_loop (int): Maximum number of files to create in a single loop.
+    - min_files_per_loop (int): Minimum number of files to create in a single loop.
+    - infinity_loops (bool): Whether to execute an infinite number of loops (True/False).
+    """
     with open(PathInputRaw.configuration_file, 'r') as file:
         try:
             config_data = yaml.safe_load(file)
@@ -36,6 +54,18 @@ def get_parameters() -> dict:
 
 
 def run_simulation() -> None:
+    """Run a simulation based on parameters obtained from the configuration file.
+
+    Retrieves simulation parameters using the `get_parameters` function and executes a simulation
+    process accordingly. The simulation creates files in specified folders and controls the number
+    of loops, sleep duration between loops, and file creation options.
+
+    Returns:
+    None
+
+    Raises:
+    ValueError: If the number of loops specified in the configuration is not greater than 0.
+    """
     parameters_dict = get_parameters()
     current_date = datetime.now().strftime("%Y_%m_%d_%H%M%S")
     output_folder = os.path.join(PathOutputRaw.output_files, current_date)
@@ -72,6 +102,20 @@ def run_simulation() -> None:
 
 
 def create_files(output_folder: str) -> None:
+    """Create .log files based on device information in the specified output folder.
+
+    Generates log files with unique names for each device, incorporating device information
+    such as name, file number, and description, etc.
+
+    Args:
+    output_folder (str): The folder where log files will be created.
+
+    Returns:
+    None
+
+    Usage:
+    create_files(output_folder)
+    """
     device = Device()
 
     file_name = f"APL{device.name}-0000{device.file_number}.log"
