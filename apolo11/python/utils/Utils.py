@@ -4,53 +4,8 @@ import random
 import yaml
 from apolo11.python.classes.classes import *
 from apolo11.python.metadata.Directory import *
+from apolo11.python.utils.parameters import get_parameters
 from datetime import datetime
-
-
-def get_parameters() -> dict:
-    """Retrieve parameters from a YAML configuration file.
-
-    Returns:
-    dict: A dictionary containing the extracted parameters.
-
-    Raises:
-    ValueError: If there is an issue loading the YAML file or if the file content is invalid.
-
-    Configuration File Format:
-    The configuration file is expected to be in YAML format and contain the following fields:
-
-    - num_loops (int): Number of loops to execute.
-    - time_to_create_file (int): Time in seconds to wait before creating a file in each loop.
-    - range_for_files (bool): Whether to use a range for creating files (True/False).
-    - max_files_per_loop (int): Maximum number of files to create in a single loop.
-    - min_files_per_loop (int): Minimum number of files to create in a single loop.
-    - infinity_loops (bool): Whether to execute an infinite number of loops (True/False).
-    """
-    with open(PathInputRaw.configuration_file, 'r') as file:
-        try:
-            config_data = yaml.safe_load(file)
-            if config_data is None:
-                raise ValueError("Error al cargar el archivo YAML. Asegúrate de que sea válido.")
-        except yaml.YAMLError as e:
-            raise ValueError(f"Error al cargar el archivo YAML: {e}")
-
-        num_loops: int = config_data.get('num_loops', 0)
-        time_to_create_file: int = config_data.get('time_to_create_file', 0)
-        range_for_files: bool = config_data.get('range_for_files', 0)
-        max_files_per_loop: int = config_data.get('max_files_per_loop', 0)
-        min_files_per_loop: int = config_data.get('min_files_per_loop', 0)
-        infinity_loops: bool = config_data.get('infinity_loops', 0)
-    
-        parameters_dict = {
-            'num_loops': num_loops,
-            'time_to_create_file': time_to_create_file,
-            'range_for_files': range_for_files,
-            'max_files_per_loop': max_files_per_loop,
-            'min_files_per_loop': min_files_per_loop,
-            'infinity_loops': infinity_loops
-        }
-
-        return parameters_dict
 
 
 def run_simulation() -> None:
@@ -89,7 +44,7 @@ def run_simulation() -> None:
                         create_files(simulation_folder)
                     if loops_num + 1 < parameters_dict['num_loops']:
                         time.sleep(parameters_dict['time_to_create_file'])
-                        
+
                 loops_num += 1
                 counter_loops += 1
 
