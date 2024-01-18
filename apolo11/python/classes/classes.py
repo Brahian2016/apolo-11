@@ -2,15 +2,9 @@ import random
 from datetime import datetime
 import hashlib
 import yaml
-from apolo11.python.metadata.Directory import PathInputRaw
+from apolo11.python.utils.parameters import get_parameters
 
-with open(PathInputRaw.configuration_file, 'r') as file:
-    config_data = yaml.safe_load(file)
-    if config_data is None:
-        raise ValueError("Error al cargar el archivo YAML.")
-    missionsConfig: list = config_data.get('Missions', [])
-    deviceTypeConfig: list = config_data.get('DeviceType', [])
-    deviceStatusConfig: list = config_data.get('DeviceStatus', [])
+diccionary = get_parameters()
 
 
 class Mission:
@@ -19,18 +13,18 @@ class Mission:
     def __init__(self) -> None:
         """Constructor method that generate the ramdom mission
         """
-        self.name: str = random.choice(missionsConfig)
+        self.name: str = random.choice(diccionary['missionsConfig'])
 
 
 class DeviceType:
     """"Class that define device type and device status
     """
     def __init__(self) -> None:
-        self.device_type: str = random.choice(deviceTypeConfig)
+        self.device_type: str = random.choice(diccionary['deviceTypeConfig'])
         self.status: str = self.generate_status()
 
     def generate_status(self) -> str:
-        return random.choice(deviceStatusConfig)
+        return random.choice(diccionary['deviceStatusConfig'])
 
 
 class Device(DeviceType, Mission):
