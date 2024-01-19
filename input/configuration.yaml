@@ -18,8 +18,8 @@ DeviceStatus:
   - unknown
 range_for_files: False
 min_files_per_loop: 10
-max_files_per_loop: 100
+max_files_per_loop: 50
 infinity_loops: False
-num_loops: 3
-time_to_create_file: 2
+num_loops: 5
+time_to_create_file: 1
 

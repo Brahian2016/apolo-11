@@ -1,65 +1,63 @@
-import random
-from datetime import datetime
+from pydantic import BaseModel, Field, root_validator
+from typing import ClassVar
 import hashlib
-import yaml
+import random
 from apolo11.python.utils.parameters import get_parameters
+from datetime import datetime
 
 diccionary = get_parameters()
 
 
-class Mission:
+class Mission(BaseModel):
     """Class to obtain a random mission name
     """
-    def __init__(self) -> None:
-        """Constructor method that generate the ramdom mission
-        """
-        self.name: str = random.choice(diccionary['missionsConfig'])
+    name: str = Field(default_factory=lambda: random.choice(diccionary['missionsConfig']))
 
 
-class DeviceType:
-    """"Class that define device type and device status
+class DeviceType(BaseModel):
+    """Class that defines device type and device status
     """
-    def __init__(self) -> None:
-        self.device_type: str = random.choice(diccionary['deviceTypeConfig'])
-        self.status: str = self.generate_status()
-
-    def generate_status(self) -> str:
-        return random.choice(diccionary['deviceStatusConfig'])
+    device_type: str = Field(default_factory=lambda: random.choice(diccionary['deviceTypeConfig']))
+    status: str = Field(default_factory=lambda: random.choice(diccionary['deviceStatusConfig']))
 
 
-class Device(DeviceType, Mission):
+class Device(Mission, DeviceType):
     """Generate device hash and file structure
     
-    :param DeviceType: Used for take the device type
+    :param DeviceType: Used for taking the device type
     :type DeviceType: class
-    :param Mission: Used for take a random Mission name
+    :param Mission: Used for taking a random Mission name
     :type Mission: class
     """
-    file_counter: int = 1  # Contador de archivos, inicializado en 1
-    
-    def __init__(self) -> None:
-        """Constructor method that inicialize Date, hash, file number and counter values
-        """
-        DeviceType.__init__(self)
-        Mission.__init__(self)
-        self.date: str = datetime.now().strftime("%d%m%y%H%M%S")
-        self.hash: hashlib = self.generate_hash()
-        self.file_number: int = Device.file_counter  # Asignar número de archivo
-        Device.file_counter += 1  # Incrementar el contador solo una vez
+    file_counter: ClassVar[int] = 1  # Class variable for the counter
 
-    def generate_hash(self) -> hashlib:
-        """Generate hash identifier
+    date: str
+    hash: str
+    file_number: int
 
-        :return: hash object
-        :rtype: hashlib
-        """
-        if self.name == "UNKN":
-            return ''
+    __annotations__ = {"hash": str, "file_counter": ClassVar[int], "file_number": int, "date": str}
 
-        data: str = f"{self.date}{self.name}{self.device_type}{self.status}"
-        return hashlib.md5(data.encode()).hexdigest()
+    @root_validator(pre=True)
+    def calculate_hash(cls, values):
+        """Calculate hash during validation"""
+        date = datetime.now().strftime("%d%m%y%H%M%S")
+        name = values.get("name", "")
+        device_type = values.get("device_type", "")
+        status = values.get("status", "")
 
-    def get_description(self) -> yaml:
+        if name == "UNKN":
+            values["hash"] = ''
+        else:
+            data: str = f"{date}{name}{device_type}{status}"
+            values["hash"] = hashlib.md5(data.encode()).hexdigest()
+
+        values["file_number"] = cls.file_counter  # Assign file number
+        values["date"] = date  # Initialize date
+        cls.file_counter += 1  # Increment the counter only once
+
+        return values
+
+    def get_description(self):
         """Get a description of the object.
 
         Returns:
@@ -69,11 +67,13 @@ class Device(DeviceType, Mission):
         - "device_type": The type of device.
         - "device_status": The status of the device.
         - "hash": The hash associated with the object.
+        - "file_number": The file number associated with the object.
         """
         return {
             "date": self.date,
             "mission": self.name,
             "device_type": self.device_type,
             "device_status": self.status,
-            "hash": self.hash
+            "hash": self.hash,
+            "file_number": self.file_number
         }

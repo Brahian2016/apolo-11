@@ -2,11 +2,11 @@ import yaml
 from apolo11.python.metadata.Directory import PathInputRaw
 
 
-def load_config(file_path: str) -> None:
+def load_config() -> None:
     """Load configuration data from a YAML file.
 
     Args:
-        file_path (str): The path to the YAML configuration file.
+        None
 
     Returns:
         None
@@ -21,10 +21,10 @@ def load_config(file_path: str) -> None:
     to safely load the YAML content.
     """
     try:
-        with open(file_path, 'r') as file:
+        with open(PathInputRaw.configuration_file, 'r') as file:
             return yaml.safe_load(file)
     except FileNotFoundError:
-        raise ValueError(f"Configuration file '{file_path}' not found.")
+        raise ValueError(f"Configuration file '{PathInputRaw.configuration_file}' not found.")
     except Exception as e:
         raise ValueError(f"Error al cargar el archivo YAML: {e}")
 
@@ -54,7 +54,7 @@ def get_parameters() -> dict:
     """
     
     # Load configuration data from YAML file
-    config_data = load_config(PathInputRaw.configuration_file)
+    config_data = load_config()
 
     # Extract individual parameters from the configuration data
     num_loops: int = config_data.get('num_loops', 0)
@@ -63,9 +63,9 @@ def get_parameters() -> dict:
     max_files_per_loop: int = config_data.get('max_files_per_loop', 0)
     min_files_per_loop: int = config_data.get('min_files_per_loop', 0)
     infinity_loops: bool = config_data.get('infinity_loops', 0)
-    missionsConfig: list = config_data.get('Missions', [])
-    deviceTypeConfig: list = config_data.get('DeviceType', [])
-    deviceStatusConfig: list = config_data.get('DeviceStatus', [])
+    missionsConfig: list[str] = config_data.get('Missions', [])
+    deviceTypeConfig: list[str] = config_data.get('DeviceType', [])
+    deviceStatusConfig: list[str] = config_data.get('DeviceStatus', [])
     
     # Validations for num_loops
     if 'num_loops' not in config_data:
