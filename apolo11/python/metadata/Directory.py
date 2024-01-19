@@ -25,3 +25,4 @@ class PathOutputRaw:
     """
     output_directory: str = os.path.join(CurrentDirectory.current_directory, 'output')
     output_files: str = os.path.join(output_directory, 'devices')
+    output_reports: str = os.path.join(output_directory, 'reports')

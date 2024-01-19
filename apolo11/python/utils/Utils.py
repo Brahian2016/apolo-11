@@ -2,6 +2,8 @@ import os
 import time
 import random
 import yaml
+import pandas as pd
+import shutil
 from apolo11.python.classes.classes import *
 from apolo11.python.metadata.Directory import *
 from apolo11.python.utils.parameters import get_parameters
@@ -81,3 +83,47 @@ def create_files(output_folder: str) -> None:
 
     with open(file_path, "w") as file:
         yaml.dump(device.get_description(), file, default_flow_style=False)
+        
+def run_reports() -> None:
+    
+    datos_concatenados = pd.DataFrame()
+
+    lista_registros = []
+
+    for ruta_carpeta, carpetas, archivos in os.walk(PathOutputRaw.output_files):
+        for archivo in archivos:
+            ruta_archivo = os.path.join(ruta_carpeta, archivo)
+            nombre, extension = os.path.splitext(archivo)
+            if os.path.isfile(ruta_archivo) and extension == '.log':
+                
+                with open(ruta_archivo, 'r') as file:
+                    # Almacenar los datos de cada registro -> dict
+                    registro: dict = {}
+                    
+                    # Obtener la carpeta y simulación desde la ruta
+                    carpeta, simulacion = os.path.split(ruta_carpeta)
+                    
+                    # Agregar la información de carpeta y simulación al registro
+                    # Utilizar os.path.basename para obtener el nombre de la carpeta sin la ruta completa
+                    registro['Carpeta'] = os.path.basename(carpeta)
+                    registro['Simulacion'] = simulacion
+                    
+                    # Iterar sobre las líneas del archivo
+                    for linea in file:
+                        # Dividir la línea en clave y valor
+                        clave, valor = linea.strip().split(': ')
+                        registro[clave] = valor
+                        
+                        # Agregar la fecha de reporte como la fecha actual
+                        registro['Fecha de Reporte'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        
+                        # Convertir el registro a un DataFrame
+                        lista_registros.append(registro)
+
+    # Crear el DataFrame a partir de la lista de registros
+    datos_concatenados = pd.DataFrame(lista_registros)
+    datos_concatenados.drop_duplicates(inplace=True)
+    
+    csv_path = os.path.join(PathOutputRaw.output_reports, 'datos_concatenados.csv')
+    
+    datos_concatenados.to_csv(csv_path, sep=';', index=False)
