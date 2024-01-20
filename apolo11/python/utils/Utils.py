@@ -4,6 +4,7 @@ import random
 import yaml
 import pandas as pd
 import shutil
+from zipfile import ZipFile
 from apolo11.python.classes.classes import *
 from apolo11.python.metadata.Directory import *
 from apolo11.python.utils.parameters import get_parameters
@@ -89,7 +90,7 @@ def run_reports() -> None:
     datos_concatenados = pd.DataFrame()
 
     lista_registros = []
-
+    fecha_reporte = str(datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
     for ruta_carpeta, carpetas, archivos in os.walk(PathOutputRaw.output_files):
         for archivo in archivos:
             ruta_archivo = os.path.join(ruta_carpeta, archivo)
@@ -115,7 +116,7 @@ def run_reports() -> None:
                         registro[clave] = valor
                         
                         # Agregar la fecha de reporte como la fecha actual
-                        registro['Fecha de Reporte'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        registro['Fecha de Reporte'] = fecha_reporte
                         
                         # Convertir el registro a un DataFrame
                         lista_registros.append(registro)
@@ -124,6 +125,63 @@ def run_reports() -> None:
     datos_concatenados = pd.DataFrame(lista_registros)
     datos_concatenados.drop_duplicates(inplace=True)
     
-    csv_path = os.path.join(PathOutputRaw.output_reports, 'datos_concatenados.csv')
+    file_name = 'datos_concatenados_' + fecha_reporte + '.csv'
     
-    datos_concatenados.to_csv(csv_path, sep=';', index=False)
+    csv_path = os.path.join(PathOutputRaw.output_reports, file_name)
+    
+    if not datos_concatenados.empty:
+        datos_concatenados.to_csv(csv_path, sep=';', index=False)
+    
+    move_files_to_backup()
+    consolidate_csv_files()
+    
+def move_files_to_backup() -> None:
+    # Verificar si la carpeta de destino existe, si no, crearla
+    if not os.path.exists(PathDataRaw.data_backups):
+        os.makedirs(PathDataRaw.data_backups)
+
+    for carpeta in os.listdir(PathOutputRaw.output_files):
+        # Crear la ruta completa de la carpeta de origen y destino
+        ruta_origen = os.path.join(PathOutputRaw.output_files, carpeta)
+        ruta_destino_zip = os.path.join(PathDataRaw.data_backups, carpeta + '.zip')
+
+        try:
+            # Comprimir la carpeta en un archivo zip
+            with ZipFile(ruta_destino_zip, 'w') as zipf:
+                for carpeta_raiz, _, archivos in os.walk(ruta_origen):
+                    for archivo in archivos:
+                        ruta_archivo_completa = os.path.join(carpeta_raiz, archivo)
+                        ruta_relativa = os.path.relpath(ruta_archivo_completa, ruta_origen)
+                        zipf.write(ruta_archivo_completa, arcname=ruta_relativa)
+
+            # Mover el archivo zip a la ubicación de destino
+            shutil.move(ruta_destino_zip, os.path.join(PathDataRaw.data_backups, carpeta + '.zip'))
+
+            shutil.rmtree(ruta_origen)
+            
+        except Exception as e:
+            print(f"Error al comprimir y mover la carpeta {carpeta}: {str(e)}")
+            
+
+def consolidate_csv_files():
+    # Verificar si la carpeta de destino existe, si no, crearla
+    if not os.path.exists(os.path.dirname(PathOutputRaw.output_consolidated)):
+        os.makedirs(os.path.dirname(PathOutputRaw.output_consolidated))
+
+    # Lista para almacenar todos los marcos de datos (DataFrames) de los archivos CSV
+    dataframes = []
+
+    for file_name in os.listdir(PathOutputRaw.output_reports):
+        if file_name.endswith(".csv"):
+            file_path = os.path.join(PathOutputRaw.output_reports, file_name)
+            
+            df = pd.read_csv(file_path, dtype=str)
+            dataframes.append(df)
+
+    # Concatenar todos los DataFrames en uno solo
+    consolidated_df = pd.concat(dataframes, ignore_index=True)
+
+    # Guardar el DataFrame consolidado en un nuevo archivo CSV
+    consolidated_file_name = os.path.join(PathOutputRaw.output_consolidated, 'consolidado.csv')
+    consolidated_df.to_csv(consolidated_file_name, index=False)
+

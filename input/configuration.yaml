@@ -16,10 +16,10 @@ DeviceStatus:
   - faulty
   - killed
   - unknown
-range_for_files: False
+range_for_files: True
 min_files_per_loop: 10
-max_files_per_loop: 50
+max_files_per_loop: 20
 infinity_loops: False
-num_loops: 5
+num_loops: 2
 time_to_create_file: 1
 

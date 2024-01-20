@@ -11,6 +11,7 @@ class PathDataRaw:
     """Class that represents the "data" work directory
     """
     data_directory: str = os.path.join(CurrentDirectory.current_directory, 'data')
+    data_backups: str = os.path.join(data_directory, 'backups')
 
 
 class PathInputRaw:
@@ -26,3 +27,4 @@ class PathOutputRaw:
     output_directory: str = os.path.join(CurrentDirectory.current_directory, 'output')
     output_files: str = os.path.join(output_directory, 'devices')
     output_reports: str = os.path.join(output_directory, 'reports')
+    output_consolidated: str = os.path.join(output_reports, 'consolidado_final')
