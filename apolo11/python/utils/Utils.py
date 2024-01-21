@@ -5,6 +5,7 @@ import yaml
 import pandas as pd
 import shutil
 import logging
+from pydantic import ValidationError
 from zipfile import ZipFile
 from apolo11.python.classes.classes import *
 from apolo11.python.metadata.Directory import *
@@ -55,18 +56,25 @@ def run_simulation() -> None:
 
 
 def create_files(output_folder: str) -> None:
-    logging.info('Iniciando creación de archivos.')
-    
-    device = Device()
-
-    file_name = f"APL{device.name}-0000{device.file_number}.log"
-    file_path = os.path.join(output_folder, file_name)
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
-
-    with open(file_path, "w") as file:
-        yaml.dump(device.get_description(), file, default_flow_style=False)
+    try:
+        logging.info('Iniciando creación de archivos.')
         
-    logging.info('Finalización de creación de archivos')
+        device = Device()
+
+        file_name = f"APL{device.name}-0000{device.file_number}.log"
+        file_path = os.path.join(output_folder, file_name)
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+        with open(file_path, "w") as file:
+            yaml.dump(device.get_description(), file, default_flow_style=False)
+            
+        logging.info('Finalización de creación de archivos')
+        
+    except ValidationError as e:
+        logging.error(f"Error de validación Pydantic al crear el Device: {e}")
+    except Exception as e:
+        # Capturar otras excepciones
+        logging.error(f"Error desconocido al crear el Device: {e}")
     
     
 def run_reports() -> bool:
