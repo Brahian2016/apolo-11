@@ -204,3 +204,21 @@ pyrightconfig.json
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,python,jupyternotebooks
+
+
+# Ignorar un archivo específico
+apolo11/python/classes/__pycache__
+apolo11/python/metadata/__pycache__
+apolo11/python/utils/__pycache__
+
+# Ignorar todos los archivos en una carpeta específica
+apolo11/data/backups/
+apolo11/output/devices/
+apolo11/output/reports/
+apolo11/output/reports/consolidado_final/
+
+# Ignorar todos los archivos con una extensión específica en cualquier parte del repositorio
+*.log
+
+# Ignorar todos los archivos .tmp en cualquier carpeta
+*/*.tmp
