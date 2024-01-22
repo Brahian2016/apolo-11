@@ -22,4 +22,6 @@ max_files_per_loop: 20
 infinity_loops: False
 num_loops: 2
 time_to_create_file: 1
+execute_by_time: True
+time_execution_second: 10
 

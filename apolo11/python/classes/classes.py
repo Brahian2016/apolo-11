@@ -23,7 +23,7 @@ class DeviceType(BaseModel):
 
 class Device(Mission, DeviceType):
     """Generate device hash and file structure
-    
+
     :param DeviceType: Used for taking the device type
     :type DeviceType: class
     :param Mission: Used for taking a random Mission name
@@ -31,11 +31,35 @@ class Device(Mission, DeviceType):
     """
     file_counter: ClassVar[int] = 1  # Class variable for the counter
 
-    date: str
-    hash: str
-    file_number: int
+    _date: str
+    _hash: str
+    _file_number: int
 
     __annotations__ = {"hash": str, "file_counter": ClassVar[int], "file_number": int, "date": str}
+
+    @property
+    def date(self):
+        return self._date
+
+    @date.setter
+    def date(self, value):
+        self._date = value
+
+    @property
+    def hash(self):
+        return self._hash
+
+    @hash.setter
+    def hash(self, value):
+        self._hash = value
+
+    @property
+    def file_number(self):
+        return self._file_number
+
+    @file_number.setter
+    def file_number(self, value):
+        self._file_number = value
 
     @root_validator(pre=True)
     def calculate_hash(cls, values):
