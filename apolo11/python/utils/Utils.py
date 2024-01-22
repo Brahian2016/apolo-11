@@ -38,11 +38,11 @@ def run_simulation() -> None:
                         if parameters_dict['range_for_files']:                        
                             for i in range(1, random.randint(parameters_dict['min_files_per_loop'], parameters_dict['max_files_per_loop'] + 1)):
                                 create_files(simulation_folder)
-                                counter_loops += 1
+                            counter_loops += 1
                         else:
                             for i in range(1, parameters_dict['max_files_per_loop'] + 1):
                                 create_files(simulation_folder)
-                                counter_loops += 1
+                            counter_loops += 1   
                 else:
                     if parameters_dict['range_for_files']:                        
                         for i in range(1, random.randint(parameters_dict['min_files_per_loop'], parameters_dict['max_files_per_loop'] + 1)):
