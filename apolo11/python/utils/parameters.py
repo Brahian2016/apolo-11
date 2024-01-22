@@ -66,6 +66,8 @@ def get_parameters() -> dict:
     missionsConfig: list[str] = config_data.get('Missions', [])
     deviceTypeConfig: list[str] = config_data.get('DeviceType', [])
     deviceStatusConfig: list[str] = config_data.get('DeviceStatus', [])
+    execute_by_time: bool = config_data.get('execute_by_time', 0)
+    time_execution_second: int = config_data.get('time_execution_second', 0)
     
     # Validations for num_loops
     if 'num_loops' not in config_data:
@@ -129,8 +131,20 @@ def get_parameters() -> dict:
     if not isinstance(deviceStatusConfig, list):
         raise ValueError("Invalid value for deviceStatus. It should be a list.")
     
+    # Validations for execute_by_time
+    if 'infinity_loops' not in config_data:
+        raise ValueError("Missing 'execute_by_time' field in the configuration file.")
+    if not isinstance(execute_by_time, bool):
+        raise ValueError("Invalid value for execute_by_time. It should be a boolean.")
+    
+    # Validations for time_execution_second
+    if 'time_execution_second' not in config_data:
+        raise ValueError("Missing 'time_execution_second' field in the configuration file.")
+    if not isinstance(time_execution_second, int) or time_execution_second < 0:
+        raise ValueError("Invalid value for time_execution_second. It should be a non-negative integer.")
+    
     # Extra validations
-    allowed_fields = {'num_loops', 'time_to_create_file', 'range_for_files', 'max_files_per_loop', 'min_files_per_loop', 'infinity_loops', 'Missions', 'DeviceType', 'DeviceStatus'}
+    allowed_fields = {'num_loops', 'time_to_create_file', 'range_for_files', 'max_files_per_loop', 'min_files_per_loop', 'infinity_loops', 'Missions', 'DeviceType', 'DeviceStatus', 'execute_by_time', 'time_execution_second'}
     unknown_fields = set(config_data.keys()) - allowed_fields
 
     if unknown_fields:
@@ -146,7 +160,9 @@ def get_parameters() -> dict:
         'infinity_loops': infinity_loops,
         'missionsConfig': missionsConfig,
         'deviceTypeConfig': deviceTypeConfig,
-        'deviceStatusConfig': deviceStatusConfig
+        'deviceStatusConfig': deviceStatusConfig,
+        'execute_by_time': execute_by_time,
+        'time_execution_second': time_execution_second
     }
 
     return parameters_dict

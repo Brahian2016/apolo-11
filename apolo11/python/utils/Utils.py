@@ -24,36 +24,48 @@ def run_simulation() -> None:
         loops_num = 0
         counter_loops = 0
 
+        start_time = time.time()
+
         if parameters_dict['num_loops'] > 0:
-            while loops_num < parameters_dict['num_loops']:
+            while True:
                 simulation_folder = os.path.join(output_folder, f"Simulacion_{counter_loops + 1}")
 
-                if parameters_dict['range_for_files']:
-                    logging.info(f"Valor mínimo de archivos por ciclo: {parameters_dict['min_files_per_loop']}")
-                    logging.info(f"Valor máximo de archivos por ciclo: {parameters_dict['max_files_per_loop']}")
-                    
-                    for i in range(1, random.randint(parameters_dict['min_files_per_loop'], parameters_dict['max_files_per_loop'] + 1)):
-                        create_files(simulation_folder)
-
-                    if loops_num + 1 < parameters_dict['num_loops']:
-                        time.sleep(parameters_dict['time_to_create_file'])
+                if parameters_dict['execute_by_time']:
+                    if time.time() - start_time >= parameters_dict['time_execution_second']:
+                        logging.info(f"Se ha alcanzado el tiempo de ejecución definido ({parameters_dict['time_execution_second']} segundos). Finalizando simulación.")
+                        break
+                    else:
+                        if parameters_dict['range_for_files']:                        
+                            for i in range(1, random.randint(parameters_dict['min_files_per_loop'], parameters_dict['max_files_per_loop'] + 1)):
+                                create_files(simulation_folder)
+                                counter_loops += 1
+                        else:
+                            for i in range(1, parameters_dict['max_files_per_loop'] + 1):
+                                create_files(simulation_folder)
+                                counter_loops += 1
                 else:
-                    for i in range(1, parameters_dict['max_files_per_loop'] + 1):
-                        create_files(simulation_folder)
+                    if parameters_dict['range_for_files']:                        
+                        for i in range(1, random.randint(parameters_dict['min_files_per_loop'], parameters_dict['max_files_per_loop'] + 1)):
+                            create_files(simulation_folder)
 
-                    if loops_num + 1 < parameters_dict['num_loops']:
-                        time.sleep(parameters_dict['time_to_create_file'])
+                        if loops_num + 1 < parameters_dict['num_loops']:
+                            time.sleep(parameters_dict['time_to_create_file'])
+                    else:
+                        for i in range(1, parameters_dict['max_files_per_loop'] + 1):
+                            create_files(simulation_folder)
 
-                loops_num += 1
-                counter_loops += 1
+                        if loops_num + 1 < parameters_dict['num_loops']:
+                            time.sleep(parameters_dict['time_to_create_file'])
 
-                if parameters_dict['infinity_loops']:
-                    loops_num = 0
+                    loops_num += 1
+                    counter_loops += 1
+
+                    if parameters_dict['infinity_loops']:
+                        loops_num = 0
         else:
             raise ValueError("La cantidad de loops debe ser mayor a 0")
     except KeyboardInterrupt:
         logging.info("\nProceso interrumpido. Saliendo...")
-
 
 def create_files(output_folder: str) -> None:
     try:
