@@ -15,7 +15,7 @@ from datetime import datetime
 logging.basicConfig(level=logging.INFO)
 
 def run_simulation() -> None:
-    logging.info('Iniciando proceso de simulación!!!')
+    logging.info('Starting simulation process...')
 
     try:
         parameters_dict = get_parameters()
@@ -28,11 +28,11 @@ def run_simulation() -> None:
 
         if parameters_dict['num_loops'] > 0:
             while True:
-                simulation_folder = os.path.join(output_folder, f"Simulacion_{counter_loops + 1}")
+                simulation_folder = os.path.join(output_folder, f"Simulation_{counter_loops + 1}")
 
                 if parameters_dict['execute_by_time']:
                     if time.time() - start_time >= parameters_dict['time_execution_second']:
-                        logging.info(f"Se ha alcanzado el tiempo de ejecución definido ({parameters_dict['time_execution_second']} segundos). Finalizando simulación.")
+                        logging.info(f"Exceeded execution time ({parameters_dict['time_execution_second']} seconds). Ending simulation.")
                         break
                     else:
                         if parameters_dict['range_for_files']:                        
@@ -63,13 +63,13 @@ def run_simulation() -> None:
                     if parameters_dict['infinity_loops']:
                         loops_num = 0
         else:
-            raise ValueError("La cantidad de loops debe ser mayor a 0")
+            raise ValueError("The number of loops must be greater than 0.")
     except KeyboardInterrupt:
-        logging.info("\nProceso interrumpido. Saliendo...")
+        logging.info("\nInterrupted process. Exit...")
 
 def create_files(output_folder: str) -> None:
     try:
-        logging.info('Iniciando creación de archivos.')
+        logging.info('Starting files creation.')
         
         device = Device()
 
@@ -80,17 +80,17 @@ def create_files(output_folder: str) -> None:
         with open(file_path, "w") as file:
             yaml.dump(device.get_description(), file, default_flow_style=False)
             
-        logging.info('Finalización de creación de archivos')
+        logging.info('Ending files creation')
         
     except ValidationError as e:
-        logging.error(f"Error de validación Pydantic al crear el Device: {e}")
+        logging.error(f"Pydantic validation error when creating device: {e}")
     except Exception as e:
         # Capturar otras excepciones
-        logging.error(f"Error desconocido al crear el Device: {e}")
+        logging.error(f"Unknown error when creating device: {e}")
     
     
 def run_reports() -> bool:
-    logging.info('Iniciando proceso de generación de reportes!!!')
+    logging.info('Starting reporting generation...')
 
     datos_concatenados = pd.DataFrame()
     lista_registros = []
@@ -118,22 +118,22 @@ def run_reports() -> bool:
     datos_concatenados = pd.DataFrame(lista_registros)
     datos_concatenados.drop_duplicates(inplace=True)
 
-    file_name = 'datos_concatenados_' + fecha_reporte + '.csv'
+    file_name = 'merged_data_' + fecha_reporte + '.csv'
     csv_path = os.path.join(PathOutputRaw.output_reports, file_name)
 
     if not datos_concatenados.empty:
         datos_concatenados.to_csv(csv_path, sep=';', index=False)
-        logging.info(f'Se generó el informe CSV: {file_name}')
+        logging.info(f'CSV report generated: {file_name}')
         move_files_to_backup()
         consolidate_csv_files()
         return True
     else:
-        logging.warning('No se encontraron datos para generar el informe.')
+        logging.warning('No data were found to generate the report.')
         return False
 
     
 def move_files_to_backup() -> None:
-    logging.info('Iniciando proceso de movimiento de archivos a la carpeta de respaldo.')
+    logging.info('Starting backup process (Moving files to backup folder.)')
 
     # Verificar si la carpeta de destino existe, si no, crearla
     if not os.path.exists(PathDataRaw.data_backups):
@@ -157,13 +157,13 @@ def move_files_to_backup() -> None:
             shutil.move(ruta_destino_zip, os.path.join(PathDataRaw.data_backups, carpeta + '.zip'))
 
             shutil.rmtree(ruta_origen)
-            logging.info(f'La carpeta {carpeta} fue comprimida y movida a la carpeta de respaldo.')
+            logging.info(f'Folder {carpeta} was compressed and moved to backup folder')
             
         except Exception as e:
-            logging.error(f"Error al comprimir y mover la carpeta {carpeta}: {str(e)}")
+            logging.error(f"Error when attempt to compress and move the folder {carpeta}: {str(e)}")
 
 def consolidate_csv_files():
-    logging.info('Iniciando proceso de consolidación de archivos CSV.')
+    logging.info('Starting CSV files consolidation.')
 
     # Verificar si la carpeta de destino existe, si no, crearla
     if not os.path.exists(os.path.dirname(PathOutputRaw.output_consolidated)):
@@ -183,7 +183,7 @@ def consolidate_csv_files():
     consolidated_df = pd.concat(dataframes, ignore_index=True)
 
     # Guardar el DataFrame consolidado en un nuevo archivo CSV
-    consolidated_file_name = os.path.join(PathOutputRaw.output_consolidated, 'consolidado.csv')
+    consolidated_file_name = os.path.join(PathOutputRaw.output_consolidated, 'merged.csv')
     consolidated_df.to_csv(consolidated_file_name, index=False)
 
-    logging.info(f'La consolidación de archivos CSV fue exitosa. Resultado guardado en {consolidated_file_name}.')
+    logging.info(f'CSV compilation was completed and succeed. Records are already saved on {consolidated_file_name}.')
