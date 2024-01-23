@@ -1,6 +1,6 @@
-# Apolo-11
+# Apolo-11: Python Bootcamp final project
 
-Apolo-11 is a simulation project that generates data for NASA devices and generate reports based on the data generated. Project is built using Python and the Tkinter library to create a User Interface for users. 
+Apolo-11 is a simulation project that generates data for NASA devices and generate reports based on the data generated. Project is built using Python and the Tkinter library to create a User Interface to have a better user experience.
 
 ## Table of Contents
 
