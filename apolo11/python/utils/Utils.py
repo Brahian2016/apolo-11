@@ -72,8 +72,12 @@ def run_simulation() -> None:
                     loops_num += 1
                     counter_loops += 1
 
+                    
                     if parameters_dict['infinity_loops']:
                         loops_num = 0
+                    
+                    if not parameters_dict['infinity_loops'] and not parameters_dict['execute_by_time'] and loops_num > parameters_dict['num_loops']:
+                        break
         else:
             raise ValueError("The number of loops must be greater than 0.")
     except KeyboardInterrupt:
