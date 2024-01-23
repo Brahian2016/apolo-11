@@ -62,6 +62,7 @@ class Device(Mission, DeviceType):
         self._file_number = value
 
     @root_validator(pre=True)
+    @classmethod
     def calculate_hash(cls, values):
         """Calculate hash during validation"""
         date = datetime.now().strftime("%d%m%y%H%M%S")
