@@ -15,6 +15,18 @@ from datetime import datetime
 logging.basicConfig(level=logging.INFO)
 
 def run_simulation() -> None:
+    """
+    Run a simulation process based on specified parameters.
+
+    This function initializes a simulation process, creating folders and files according
+    to the specified parameters.
+    
+    Raises:
+    - ValueError: If the number of loops specified in the parameters is not greater than 0.
+
+    Note:
+    - The simulation can be interrupted using a KeyboardInterrupt (Ctrl+C).
+    """
     logging.info('Starting simulation process...')
 
     try:
@@ -68,6 +80,24 @@ def run_simulation() -> None:
         logging.info("\nInterrupted process. Exit...")
 
 def create_files(output_folder: str) -> None:
+    """
+    Create files in the specified output folder.
+
+    This method generates a log file for a simulated device and saves it to the specified output folder.
+    The log file contains device information in YAML format.
+
+    Parameters:
+    - output_folder (str): The path to the folder where the log file will be created.
+
+    Raises:
+    - ValidationError: If there is a Pydantic validation error during device creation.
+    - Exception: If an unknown error occurs during device creation.
+
+    Note:
+    - The log file is named in the format "APL{device_name}-0000{file_number}.log".
+    - Device information is obtained using the Device class and saved in YAML format.
+    """
+    
     try:
         logging.info('Starting files creation.')
         
@@ -90,6 +120,23 @@ def create_files(output_folder: str) -> None:
     
     
 def run_reports() -> bool:
+    """
+    Generate reports based on log files in the specified output folder.
+
+    This method searches for log files in the output folder, extracts information, and creates
+    a consolidated CSV report. The CSV report is saved in the 'output_reports' folder and includes data
+    from different simulations.
+
+    Returns:
+    - bool: True if the report is generated successfully, False if no data is found.
+
+    Note:
+    - Log files in the '.log' format are processed.
+    - Extracted information includes simulation folder, report date.
+    - The consolidated CSV report is named 'concatenated_data_{report_date}.csv'.
+    - The report is saved in the 'output_reports' folder.
+    - If the report is generated successfully, files are moved to backup and CSV files are consolidated.
+    """
     logging.info('Starting reporting generation...')
 
     datos_concatenados = pd.DataFrame()
@@ -118,7 +165,7 @@ def run_reports() -> bool:
     datos_concatenados = pd.DataFrame(lista_registros)
     datos_concatenados.drop_duplicates(inplace=True)
 
-    file_name = 'merged_data_' + fecha_reporte + '.csv'
+    file_name = 'concatenated_data_' + fecha_reporte + '.csv'
     csv_path = os.path.join(PathOutputRaw.output_reports, file_name)
 
     if not datos_concatenados.empty:
@@ -133,6 +180,19 @@ def run_reports() -> bool:
 
     
 def move_files_to_backup() -> None:
+    """
+    Move files to the backup folder after compressing them into zip archives.
+
+    This method compresses each subfolder in the 'output_files' directory into a zip archive and then
+    moves the zip file to the 'data_backups' folder.
+
+    Note:
+    - The 'data_backups' folder is created if it doesn't exist.
+    - Each subfolder in 'output_files' is compressed into a separate zip archive.
+    - The compressed zip file is moved to the 'data_backups' folder.
+    - The original subfolder is deleted after a successful compression and move operation.
+    - Any errors during the process are logged using "logging" library. 
+    """
     logging.info('Starting backup process (Moving files to backup folder.)')
 
     # Verificar si la carpeta de destino existe, si no, crearla
@@ -163,6 +223,15 @@ def move_files_to_backup() -> None:
             logging.error(f"Error when attempt to compress and move the folder {carpeta}: {str(e)}")
 
 def consolidate_csv_files():
+    """This function performs the following steps:
+
+    1. Checks for output directory: Ensures the output directory exists, creating it if necessary.
+    2. Reads CSV files: Iterates through CSV files in a specified input directory (PathOutputRaw.output_reports), reads their contents into DataFrames using Pandas, and appends them to a list.
+    3. Concatenates DataFrames: Combines all DataFrames in the list into a single, consolidated DataFrame using Pandas' concat function.
+    4. Saves merged CSV: Saves the consolidated DataFrame to a new CSV file named "merged.csv" in a specified output directory (PathOutputRaw.output_consolidated).
+    5. Logs completion: Logs a message indicating successful completion and the location of the merged file.
+
+    """
     logging.info('Starting CSV files consolidation.')
 
     # Verificar si la carpeta de destino existe, si no, crearla
