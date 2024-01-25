@@ -46,99 +46,47 @@ DeviceStatus:
   - killed
   - unknown
 ```
-There are three different ways to run the program
-- When you want to have inifity loops, and you want the system to create files indefinitely:
+There are three different ways to run the program: 
+
 ```python
-#--------------------------
+#---------------------------------------------------------------------------
 
 #This part is shared among the three ways to run the program:
 #range_for_files defines the quantity of files that will be generated during the execution
-# If range_for_files is true, you need to use min_files_per_loop and max_files_per_loop to generate a random number between these two
-# If range_for_files is false, you need to use only max_files_per_loop to generate a random number between 0 and max_files_per_loop
- 
-range_for_files: True
-min_files_per_loop: 10 
-max_files_per_loop: 20 
-#--------------------------
-
-# First way to run the program: When you want to have inifity loops, and you want the system to create files indefinitely (You can kill the program using Ctrl + C)
-# execute_by_time must be FALSE
-
-infinity_loops: True 
-
-#--------------------------
-
-num_loops: 2 
-time_to_create_file: 1
-
-#--------------------------
- 
-execute_by_time: False
-time_execution_second: 5 
-```
-
-- When you want to execute the program for an specific time:
-```python
-#--------------------------
-
-#This part is shared among the three ways to run the program:
-#range_for_files defines the quantity of files that will be generated during the execution
-# If range_for_files is true, you need to use min_files_per_loop and max_files_per_loop to generate a random number between these two
-# If range_for_files is false, you need to use only max_files_per_loop to generate a random number between 0 and max_files_per_loop
+# If range_for_files is TRUE, you need to use min_files_per_loop and max_files_per_loop to generate a random number between these two
+# If range_for_files is FALSE, you need to use only max_files_per_loop to generate a random number between 0 and max_files_per_loop
 
 range_for_files: True 
 min_files_per_loop: 10 
 max_files_per_loop: 20 
 
-#--------------------------
+#---------------------------------------------------------------------------
 
-infinity_loops: False 
-
-#--------------------------
-
-num_loops: 2 
-time_to_create_file: 1
-
-#--------------------------
-#Second way to execute program: When you want to execute the program for an specific time:
+#First way to execute program: When you want to execute the program for an specific time:
 # infinity_loops must be FALSE
 # time_execution_second must be greater than 0
- 
+
 execute_by_time: True 
 time_execution_second: 5
-```
 
-- When you want to run the program by a number of designated loops: 
-  - if num_loops is 20, it will be creating one folder with 20 files
-```python
-#--------------------------
+#---------------------------------------------------------------------------
 
-#This part is shared among the three ways to run the program:
-#range_for_files defines the quantity of files that will be generated during the execution
-# If range_for_files is TRUE, you need to use min_files_per_loop and max_files_per_loop to generate a random number between these two. 
-# If range_for_files is FALSE, system will use 0 to max_files_per_loop: 20 to generate the number of files. 
-
-range_for_files: True 
-min_files_per_loop: 10 
-max_files_per_loop: 20 
-
-#--------------------------
+# Second way to run the program: When you want to have inifity loops, and you want the system to create files indefinitely. 
+# execute_by_time must be FALSE
 
 infinity_loops: False 
 
-#--------------------------
-
+#---------------------------------------------------------------------------
 #Third way to run the program: When you want to run the program by a number of designated loops
 # infinity_loops must be FALSE
 # execute_by_time must be FALSE
 # num_loop must be greater than 0
 
 num_loops: 2 
-time_to_create_file: 1 
-#--------------------------
+time_to_create_file: 1
 
-execute_by_time: False 
-time_execution_second: 5 
+#---------------------------------------------------------------------------
+
 ```
 
 
