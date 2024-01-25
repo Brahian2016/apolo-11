@@ -51,10 +51,10 @@ There are three different ways to run the program:
 ```python
 #---------------------------------------------------------------------------
 
-#This part is shared among the three ways to run the program:
+# This part is shared among the three ways to run the program:
 #range_for_files defines the quantity of files that will be generated during the execution
-# If range_for_files is TRUE, you need to use min_files_per_loop and max_files_per_loop to generate a random number between these two
-# If range_for_files is FALSE, you need to use only max_files_per_loop to generate a random number between 0 and max_files_per_loop
+# If range_for_files is TRUE, an aleatory number will be generated between min_files_per_loop and max_files_per_loop. 
+# If range_for_files is FALSE, the number of files generated will be equal to max_files_per_loop.
 
 range_for_files: True 
 min_files_per_loop: 10 
@@ -62,7 +62,7 @@ max_files_per_loop: 20
 
 #---------------------------------------------------------------------------
 
-#First way to execute program: When you want to execute the program for an specific time:
+# First way to execute program: When you want to execute the program for an specific time:
 # infinity_loops must be FALSE
 # time_execution_second must be greater than 0
 
@@ -77,7 +77,7 @@ time_execution_second: 5
 infinity_loops: False 
 
 #---------------------------------------------------------------------------
-#Third way to run the program: When you want to run the program by a number of designated loops
+# Third way to run the program: When you want to run the program by a number of designated loops
 # infinity_loops must be FALSE
 # execute_by_time must be FALSE
 # num_loop must be greater than 0
