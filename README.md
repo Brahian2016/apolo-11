@@ -46,19 +46,20 @@ DeviceStatus:
   - killed
   - unknown
 ```
-There are three different ways to run the program: 
+
+There are three different ways to run the program:
 
 ```python
 #---------------------------------------------------------------------------
 
 # This part is shared among the three ways to run the program:
 #range_for_files defines the quantity of files that will be generated during the execution
-# If range_for_files is TRUE, an aleatory number will be generated between min_files_per_loop and max_files_per_loop. 
+# If range_for_files is TRUE, an aleatory number will be generated between min_files_per_loop and max_files_per_loop.
 # If range_for_files is FALSE, the number of files generated will be equal to max_files_per_loop.
 
-range_for_files: True 
-min_files_per_loop: 10 
-max_files_per_loop: 20 
+range_for_files: True
+min_files_per_loop: 10
+max_files_per_loop: 20
 
 #---------------------------------------------------------------------------
 
@@ -66,15 +67,15 @@ max_files_per_loop: 20
 # infinity_loops must be FALSE
 # time_execution_second must be greater than 0
 
-execute_by_time: True 
+execute_by_time: True
 time_execution_second: 5
 
 #---------------------------------------------------------------------------
 
-# Second way to run the program: When you want to have inifity loops, and you want the system to create files indefinitely. 
+# Second way to run the program: When you want to have inifity loops, and you want the system to create files indefinitely.
 # execute_by_time must be FALSE
 
-infinity_loops: False 
+infinity_loops: False
 
 #---------------------------------------------------------------------------
 # Third way to run the program: When you want to run the program by a number of designated loops
@@ -82,13 +83,12 @@ infinity_loops: False
 # execute_by_time must be FALSE
 # num_loop must be greater than 0
 
-num_loops: 2 
+num_loops: 2
 time_to_create_file: 1
 
 #---------------------------------------------------------------------------
 
 ```
-
 
 2. Go to Terminal and execute "main.py"
 
@@ -148,15 +148,28 @@ Testing will be divided in two main categories:
 - We will perform Boundaries technique to design test cases
 - All the parameters mentioned below, are listed on the [Configuration file](input/configuration.yaml) where you can update it accordinly.
 
-### Happy path's
+#### Using execute_by_time
 
-| Scenario                                     | Cycle time (secs) | Encabezado 3 |
-| -------------------------------------------- | ----------------- | ------------ |
-| User changed cycle time to less than 20 secs | 5                 | Celda 1,3    |
-| User changed cycle time upper than 20 secs   | 35                | Celda 3,3    |
-| Celda 2,1                                    | 20                | Celda 2,3    |
+| Scenario             | time_to_create_file | range_for_files | min_files_per_loop | max_files_per_loop | Expected result                                                                                                                                                                                                                              |
+| -------------------- | ------------------- | --------------- | ------------------ | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| execute_by_time = 3  | 8                   | TRUE            | 10                 | 20                 | The program will be run for 3 seconds successfully. The quantity of files per each folder will be defined by a random number between 10 and 20, and the quantity of folders created will be the number that the system can reach during that time. `time_to_create_file` will be defined as the time sleep between the creation of each. |
+| execute_by_time = 20 | 2                   | FALSE           | N/A                | 16                 | The program will be run for 20 seconds successfully. The quantity of files per each folder will be defined by 16, and the quantity of folders created will be the number that the system can reach during that time. `time_to_create_file` will be defined as the time sleep between the creation of each.                                |
+| execute_by_time = 40 | 7                   | TRUE            | 30                 | 55                 | The program will be run for 40 seconds successfully. The quantity of files per each folder will be defined by a random number between 30 and 55, and the quantity of folders created will be the number that the system can reach during that time. `time_to_create_file` will be defined as the time sleep between the creation of each.|
 
-### Unhappy path's
-| Scenario                                     | Cycle time (secs) | Encabezado 3 |
-| -------------------------------------------- | ----------------- | ------------ |
-| User changed cycle time to less than 0 secs | 0                 | Celda 1,3    |
+
+#### Using infinity_loops
+
+| Scenario               | time_to_create_file | range_for_files | min_files_per_loop | max_files_per_loop | Expected result                                                                                                                                                                                                                            |
+| ---------------------- | ------------------- | --------------- | ------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| infinity_loops = True   | 9                   | TRUE            | 15                 | 25                 | The program will be run indefinitely. The quantity of files per each folder will be defined by a random number between 15 and 25, and the quantity of folders created will be the number that the system can reach during the time it is executing. `time_to_create_file` will be defined as the time sleep between the creation of each.|
+| infinity_loops = True   | 3                   | FALSE           | N/A                | 54                 | The program will be run indefinitely. The quantity of files per each folder will be defined by 54, and the quantity of folders created will be the number that the system can reach during the time it is executing. `time_to_create_file` will be defined as the time sleep between the creation of each.                                |
+| infinity_loops = True   | 6                   | TRUE            | 35                 | 60                 | The program will be run indefinitely. The quantity of files per each folder will be defined by a random number between 35 and 60, and the quantity of folders created will be the number that the system can reach during the time it is executing. `time_to_create_file` will be defined as the time sleep between the creation of each.|
+
+
+#### Using num_loops
+
+| Scenario       | time_to_create_file | range_for_files | min_files_per_loop | max_files_per_loop | Expected result                                                                                                                                                                                                                       |
+| -------------- | ------------------- | --------------- | ------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| num_loops = 2  | 10                  | TRUE            | 15                 | 25                 | 2 folders were created during the execution. The quantity of files per each folder will be define by a random number between 15 and 25. time_to_create_file will be define the time sleep between the creation of each folder.|
+| num_loops = 10 | 5                   | FALSE           | N/A                | 90                | 10 folders were created during the execution. The quantity of files per each folder will be define by 90. time_to_create_file will be define the time sleep between the creation of each folder.                                                                                                                                                                                                                                  |
+| num_loops = 20 | 1                   | TRUE            | 35                 | 60                 | 20 folders were created during the execution. The quantity of files per each folder will be define by a random number between 35 and 60. time_to_create_file will be define the time sleep between the creation of each. folder.                                                                                                                                                                                                                                  |
