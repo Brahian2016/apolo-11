@@ -149,6 +149,7 @@ def run_reports() -> bool:
     datos_concatenados = pd.DataFrame()
     lista_registros = []
     fecha_reporte = str(datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
+    fecha_reporte_formateada = str(datetime.now().strftime('%d%m%Y%H%M%S'))
 
     for ruta_carpeta, carpetas, archivos in os.walk(PathOutputRaw.output_files):
         for archivo in archivos:
@@ -172,7 +173,7 @@ def run_reports() -> bool:
     datos_concatenados = pd.DataFrame(lista_registros)
     datos_concatenados.drop_duplicates(inplace=True)
 
-    file_name = 'concatenated_data_' + fecha_reporte + '.csv'
+    file_name = 'APLSTATS_REPORT_' + fecha_reporte_formateada + '.log'
     csv_path = os.path.join(PathOutputRaw.output_reports, file_name)
 
     if not datos_concatenados.empty:
@@ -249,7 +250,7 @@ def consolidate_csv_files():
     dataframes = []
 
     for file_name in os.listdir(PathOutputRaw.output_reports):
-        if file_name.endswith(".csv"):
+        if file_name.endswith(".log"):
             file_path = os.path.join(PathOutputRaw.output_reports, file_name)
             
             df = pd.read_csv(file_path, dtype=str)
