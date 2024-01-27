@@ -14,7 +14,7 @@ from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 
-def run_simulation() -> None:
+def run_simulation(stop_flag) -> None:
     """
     Run a simulation process based on specified parameters.
 
@@ -40,6 +40,9 @@ def run_simulation() -> None:
 
         if parameters_dict['num_loops'] > 0:
             while True:
+                if stop_flag.value:
+                    logging.info("Simulation process stopped.")
+                    break
                 simulation_folder = os.path.join(output_folder, f"Simulation_{counter_loops + 1}")
 
                 if parameters_dict['execute_by_time']:
