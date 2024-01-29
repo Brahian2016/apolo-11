@@ -7,6 +7,7 @@ from apolo11.python.utils.Utils import run_simulation, run_reports
 # Configuración básica de logging
 logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+
 def run_simulation_process(stop_flag):
     global stop_execution_flag
     try:
@@ -14,9 +15,11 @@ def run_simulation_process(stop_flag):
     except KeyboardInterrupt:
         logging.info("\nSimulation process interrupted. Exit...")
 
+
 def run_reports_process():
     global stop_execution_flag
     run_reports()
+
 
 def main():
     # Multiprocessing managers for communication
@@ -85,6 +88,7 @@ def main():
     multiprocessing.freeze_support()
     
     mostrar_menu()
+
 
 if __name__ == "__main__":
     main()
