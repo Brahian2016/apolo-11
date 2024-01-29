@@ -14,6 +14,7 @@ from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 
+
 def run_simulation(stop_flag) -> None:
     """
     Run a simulation process based on specified parameters.
@@ -50,16 +51,16 @@ def run_simulation(stop_flag) -> None:
                         logging.info(f"Exceeded execution time ({parameters_dict['time_execution_second']} seconds). Ending simulation.")
                         break
                     else:
-                        if parameters_dict['range_for_files']:                        
+                        if parameters_dict['range_for_files']:
                             for i in range(1, random.randint(parameters_dict['min_files_per_loop'], parameters_dict['max_files_per_loop'] + 1)):
                                 create_files(simulation_folder)
                             counter_loops += 1
                         else:
                             for i in range(1, parameters_dict['max_files_per_loop'] + 1):
                                 create_files(simulation_folder)
-                            counter_loops += 1   
+                            counter_loops += 1
                 else:
-                    if parameters_dict['range_for_files']:                        
+                    if parameters_dict['range_for_files']:
                         for i in range(1, random.randint(parameters_dict['min_files_per_loop'], parameters_dict['max_files_per_loop'] + 1)):
                             create_files(simulation_folder)
 
@@ -75,7 +76,6 @@ def run_simulation(stop_flag) -> None:
                     loops_num += 1
                     counter_loops += 1
 
-                    
                     if parameters_dict['infinity_loops']:
                         loops_num = 0
                     
@@ -85,6 +85,7 @@ def run_simulation(stop_flag) -> None:
             raise ValueError("The number of loops must be greater than 0.")
     except KeyboardInterrupt:
         logging.info("\nInterrupted process. Exit...")
+
 
 def create_files(output_folder: str) -> None:
     """
@@ -199,7 +200,7 @@ def move_files_to_backup() -> None:
     - Each subfolder in 'output_files' is compressed into a separate zip archive.
     - The compressed zip file is moved to the 'data_backups' folder.
     - The original subfolder is deleted after a successful compression and move operation.
-    - Any errors during the process are logged using "logging" library. 
+    - Any errors during the process are logged using "logging" library.
     """
     logging.info('Starting backup process (Moving files to backup folder.)')
 
@@ -229,6 +230,7 @@ def move_files_to_backup() -> None:
             
         except Exception as e:
             logging.error(f"Error when attempt to compress and move the folder {carpeta}: {str(e)}")
+
 
 def consolidate_csv_files():
     """This function performs the following steps:

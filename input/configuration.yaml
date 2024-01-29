@@ -35,7 +35,7 @@ max_files_per_loop: 15
 # infinity_loops must be FALSE
 # time_execution_second must be greater than 0
 
-execute_by_time: True 
+execute_by_time: False 
 time_execution_second: 5
 
 #---------------------------------------------------------------------------
